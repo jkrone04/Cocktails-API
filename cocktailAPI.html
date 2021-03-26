@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+	<title>Cocktails API</title>
+	<meta charset="utf-8"/>
+	<script>
+		function getCocktails() {
+			request = new XMLHttpRequest();
+			request.open("GET", "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita", true)
+
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					response = request.responseText;
+					drink = JSON.parse(response);
+
+					drinkInfo = "";
+
+					for(var i = 0; i < 6; i++) {
+						drinkName = drink["drinks"][i]["strDrink"];
+						drinkIngredients = [drink["drinks"][i]["strIngredient1"], drink["drinks"][i]["strIngredient2"], drink["drinks"][i]["strIngredient3"], drink["drinks"][i]["strIngredient4"], drink["drinks"][i]["strIngredient5"]];
+						drinkInstructions = drink["drinks"][i]["strInstructions"];
+						drinkImage = drink["drinks"][i]["strDrinkThumb"]
+						
+						drinkInfo += "Drink " + parseInt(i+1) + ": " + drinkName + "<br> Ingredients: " + drinkIngredients + "<br> Instructions: " + drinkInstructions + "<br><img style='width:200px;height=200px' src=" + drinkImage + "><br><br>";
+					}
+
+					extraInfo = "The API that I selected is a Cocktail Database, which includes recipes to hundreds of cocktails. It can be found at https://www.thecocktaildb.com/api.php. The API allows the user to search for a cocktail by name, list all cocktails by first letter, search ingredients by name, look up cocktails by id, look up incredients by id, and look up a random cocktail. For this demo, I searched for cocktails by name, using the name: margarita. Once I retreived the information from the .json file, I split it up into the drink name, the drink ingredients, the drink instructions, and an image of the drink. This API would be helpful for bartenders who are learning how to mix drinks and need to search for drinks/ingredients by different attributes. It would also be helpful for restaurant if they are trying to put together a specials menu for the night, where they put 3 new random cocktails on the menu."
+
+					document.getElementById("info").innerHTML = drinkInfo + extraInfo;
+					
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+					document.getElementById("info").innerHTML = "Something went wrong.";
+				}
+
+				else if (request.readyState == 3) {
+					document.getElementById("info").innerHTML = "Not ready - please try again.";
+				}
+
+			}
+			request.send();
+		}
+	</script>
+</head>
+
+
+<body onload="getCocktails()">
+
+	<h1>Margarita Cocktails</h1>
+	<div id="info">Retreiving Cocktails...</div>
+</body>
+</html>
